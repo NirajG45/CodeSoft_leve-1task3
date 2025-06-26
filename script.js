@@ -1,21 +1,33 @@
-function append(value) {
-  document.getElementById("display").value += value;
+let expression = "";
+
+function append(char) {
+  if (expression === "Error") expression = "";
+  expression += char;
+  updateDisplay();
 }
 
 function clearDisplay() {
-  document.getElementById("display").value = "";
+  expression = "";
+  updateDisplay();
 }
 
 function deleteLast() {
-  const display = document.getElementById("display");
-  display.value = display.value.slice(0, -1);
+  if (expression === "Error") expression = "";
+  expression = expression.slice(0, -1);
+  updateDisplay();
+}
+
+function updateDisplay() {
+  document.getElementById("display").value = expression;
 }
 
 function calculate() {
   try {
-    const result = eval(document.getElementById("display").value);
-    document.getElementById("display").value = result;
-  } catch (error) {
-    document.getElementById("display").value = "Error";
+    const result = Function('"use strict"; return (' + expression + ')')();
+    expression = result.toString();
+    updateDisplay();
+  } catch (e) {
+    expression = "Error";
+    updateDisplay();
   }
 }
